@@ -132,6 +132,13 @@ _start1:
 		mov ds,ax
 		mov es,ax
 
+		; Copy chunk of memory used by Dell BIOS on OptiPlex 790s
+		; Allows control to return to PXE Boot Agent for localboot
+		mov esi,47cch
+		mov edi,DellBIOSChunk
+		mov ecx,13
+		rep movsd
+
 %if 0 ; debugging code only... not intended for production use
 		; Clobber the stack segment, to test for specific pathologies
 		mov di,STACK_BASE
@@ -289,6 +296,14 @@ local_boot:
 		; Restore the environment we were called with
 		pm_call reset_pxe
 		call cleanup_hardware
+
+		; Copy Dell BIOS chunk back into place
+		cld
+		mov esi,DellBIOSChunk
+		mov edi,47cch
+		mov ecx,13
+		rep movsd
+
 		lss sp,[InitStack]
 		pop gs
 		pop fs
@@ -564,3 +579,6 @@ IPInfo:
 .ServerIP	resd 1
 .GatewayIP	resd 1
 .Netmask	resd 1
+
+		section .earlybss
+DellBIOSChunk   resd 13     ; 52 bytes to store Dell BIOS chunk
