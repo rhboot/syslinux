@@ -87,6 +87,9 @@ ssize_t xpwrite(int fd, const void *buf, size_t count, off_t offset)
     ssize_t rv;
     ssize_t done = 0;
 
+    if (fd < 0)
+	die(strerror(EBADF));
+
     while (count) {
 	rv = pwrite(fd, bufp, count, offset);
 	if (rv == 0) {
@@ -279,6 +282,11 @@ static int sectmap_fib(int fd, sector_t *sectors, int nsectors)
  */
 int sectmap(int fd, sector_t *sectors, int nsectors)
 {
+    if (fd < 0) {
+	errno = EBADF;
+	return -1;
+    }
+
     if (!sectmap_fie(fd, sectors, nsectors))
 	return 0;
 

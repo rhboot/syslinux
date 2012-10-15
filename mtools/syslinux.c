@@ -208,6 +208,7 @@ int main(int argc, char *argv[])
 	!mtools_conf)
 	die_err(tmpdir);
 
+    umask(077);
     mtc_fd = mkstemp(mtools_conf);
     if (mtc_fd < 0 || !(mtc = fdopen(mtc_fd, "w")))
 	die_err(mtools_conf);

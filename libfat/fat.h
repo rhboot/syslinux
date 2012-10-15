@@ -23,8 +23,13 @@
 
 /* The poor excuse FAT has for a superblock -- in the boot sector */
 struct fat_bootsect {
-    le8_t bsJump[3];		/* Jump to code */
-    char bsOemName[8];		/* Formatting program */
+    union {
+	struct {
+	    uint8_t bsJump[3];	/* Jump to code */
+	    char bsOemName[8];	/* Formatting program */
+	};
+	uint8_t bsHead[11];
+    };
     le16_t bsBytesPerSec;	/* Bytes/sector */
     le8_t bsSecPerClust;	/* Sectors/cluster */
     le16_t bsResSectors;	/* Reserved sectors */

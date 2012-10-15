@@ -351,6 +351,8 @@ check_option(int argc, char *argv[])
         case ':':
             errx(1, "option `-%c' takes an argument", optopt);
 
+            printh();
+            exit(0);
         default:
         case '?':
             if (optopt)
@@ -606,7 +608,7 @@ initialise_mbr(uint8_t *mbr)
     bsect = (offset % sector) + 1;
     bcyle = offset / (head * sector);
 
-    bsect += (bcyle & 0x300) >> 2;
+    bsect += bcyle >> 2;
     bcyle  &= 0xFF;
 
     ehead = head - 1;
@@ -746,7 +748,7 @@ initialise_gpt(uint8_t *gpt, uint32_t current, uint32_t alternate, int primary)
     memcpy(part->partTypeGUID, basic_partition, sizeof(uuid_t));
     part->firstLBA = lendian_64(0);
     part->lastLBA = lendian_64(psize);
-    memcpy(part->name, "ISOHybrid ISO", 28);
+    memcpy(part->name, L"ISOHybrid ISO", 28);
 
     gpt += sizeof(struct gpt_part_header);
     part++;
@@ -755,7 +757,7 @@ initialise_gpt(uint8_t *gpt, uint32_t current, uint32_t alternate, int primary)
     memcpy(part->partTypeGUID, basic_partition, sizeof(uuid_t));
     part->firstLBA = lendian_64(efi_lba * 4);
     part->lastLBA = lendian_64(part->firstLBA + efi_count - 1);
-    memcpy(part->name, "ISOHybrid", 20);
+    memcpy(part->name, L"ISOHybrid", 20);
 
     gpt += sizeof(struct gpt_part_header);
 
@@ -768,7 +770,7 @@ initialise_gpt(uint8_t *gpt, uint32_t current, uint32_t alternate, int primary)
 	memcpy(part->partTypeGUID, hfs_partition, sizeof(uuid_t));
 	part->firstLBA = lendian_64(mac_lba * 4);
 	part->lastLBA = lendian_64(part->firstLBA + mac_count - 1);
-	memcpy(part->name, "ISOHybrid", 20);
+	memcpy(part->name, L"ISOHybrid", 20);
 
 	part--;
     }
@@ -845,7 +847,11 @@ main(int argc, char *argv[])
     size_t orig_gpt_size, free_space, gpt_size;
     struct iso_primary_descriptor descriptor;
 
-    prog = strcpy(alloca(strlen(argv[0]) + 1), argv[0]);
+    prog = alloca(strlen(argv[0]) + 1);
+    if (!prog)
+	err(1, "");
+    strcpy(prog, argv[0]);
+
     i = check_option(argc, argv);
     argc -= i;
     argv += i;
@@ -1053,7 +1059,9 @@ main(int argc, char *argv[])
 
 	initialise_apm(buf, APM_OFFSET);
 
-	fseek(fp, APM_OFFSET, SEEK_SET);
+	if (fseek(fp, APM_OFFSET, SEEK_SET))
+	    err(1, "%s: seek error - 7", argv[0]);
+
 	fwrite(buf, sizeof(char), apm_size, fp);
     }
 

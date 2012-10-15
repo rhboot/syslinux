@@ -292,7 +292,12 @@ int patch_file_and_bootblock(int fd, const char *dir, int devfd)
     nsect = (boot_image_len + SECTOR_SIZE - 1) >> SECTOR_SHIFT;
     nsect += 2;			/* Two sectors for the ADV */
     sectp = alloca(sizeof(sector_t) * nsect);
-    if (fs_type == EXT2 || fs_type == VFAT) {
+    if (sectp == NULL) {
+	perror("alloca");
+	exit(1);
+    }
+    memset(sectp, '\0', sizeof(sector_t) * nsect);
+    if (fd >= 0 && (fs_type == EXT2 || fs_type == VFAT)) {
 	if (sectmap(fd, sectp, nsect)) {
 		perror("bmap");
 		exit(1);
@@ -423,6 +428,8 @@ int ext2_fat_install_file(const char *path, int devfd, struct stat *rst)
 
     /* Map the file, and patch the initial sector accordingly */
     modbytes = patch_file_and_bootblock(fd, path, devfd);
+    if (modbytes < 0)
+	goto bail;
 
     /* Write the patch area again - this relies on the file being
        overwritten in place! */

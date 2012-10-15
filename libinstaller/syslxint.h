@@ -193,8 +193,13 @@ struct syslinux_extent {
 
 /* FAT bootsector format, also used by other disk-based derivatives */
 struct boot_sector {
-    uint8_t bsJump[3];
-    char bsOemName[8];
+    union {
+	struct {
+	    uint8_t bsJump[3];
+	    char bsOemName[8];
+	};
+	uint8_t bsHead[11];
+    };
     uint16_t bsBytesPerSec;
     uint8_t bsSecPerClust;
     uint16_t bsResSectors;
@@ -241,7 +246,6 @@ struct boot_sector {
     uint16_t bsSignature;
 } __attribute__ ((packed));
 
-#define bsHead      bsJump
 #define bsHeadLen   offsetof(struct boot_sector, bsBytesPerSec)
 #define bsCode	    bs32.Code	/* The common safe choice */
 #define bsCodeLen   (offsetof(struct boot_sector, bsSignature) - \

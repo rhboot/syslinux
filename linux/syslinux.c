@@ -335,9 +335,6 @@ int main(int argc, char *argv[])
 	    snprintf(mntname, sizeof mntname, "syslinux.mnt.%lu.%d",
 		     (unsigned long)mypid, i);
 
-	    if (lstat(mntname, &dst) != -1 || errno != ENOENT)
-		continue;
-
 	    rv = mkdir(mntname, 0000);
 
 	    if (rv == -1) {

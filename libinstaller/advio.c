@@ -135,15 +135,16 @@ int write_adv(const char *path, const char *cfg)
 		       xst.st_dev != st.st_dev || xst.st_size != st.st_size) {
 		fprintf(stderr, "%s: race condition on write\n", file);
 		err = -2;
-	    }
-	    /* Write our own version ... */
-	    if (xpwrite(fd, syslinux_adv, 2 * ADV_SIZE,
-			st.st_size - 2 * ADV_SIZE) != 2 * ADV_SIZE) {
-		err = -1;
-	    }
+	    } else {
+		/* Write our own version ... */
+		if (xpwrite(fd, syslinux_adv, 2 * ADV_SIZE,
+			    st.st_size - 2 * ADV_SIZE) != 2 * ADV_SIZE) {
+		    err = -1;
+		}
 
-	    sync();
-	    set_attributes(fd);
+		sync();
+		set_attributes(fd);
+	    }
 	}
     }
 
