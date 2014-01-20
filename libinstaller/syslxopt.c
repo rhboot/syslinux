@@ -102,11 +102,11 @@ void __attribute__ ((noreturn)) usage(int rv, enum syslinux_mode mode)
     fprintf(stderr,
 	    "  --install    -i  Install over the current bootsector\n"
 	    "  --update     -U  Update a previous installation\n"
-	    "  --zip        -z  Force zipdrive geometry (-H 64 -S 32)\n"
+	    "  --zipdrive   -z  Force zipdrive geometry (-H 64 -S 32)\n"
 	    "  --sectors=#  -S  Force the number of sectors per track\n"
 	    "  --heads=#    -H  Force number of heads\n"
 	    "  --stupid     -s  Slow, safe and stupid mode\n"
-	    "  --raid       -r  Fall back to the next device on boot failure\n"
+	    "  --raid-mode  -r  Fall back to the next device on boot failure\n"
 	    "  --once=...   %s  Execute a command once upon boot\n"
 	    "  --clear-once -O  Clear the boot-once command\n"
 	    "  --reset-adv      Reset auxilliary data\n",
