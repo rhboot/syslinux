@@ -275,6 +275,16 @@ efi64:
 		FIRMWARE=EFI64 FWCLASS=EFI \
 		$(MAKECMDGOALS)
 
+install-all:
+
+install:
+
+netinstall:
+
+clean:
+
+all:
+
 else # FIRMWARE
 
 all: all-local subdirs
