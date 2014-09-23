@@ -4,7 +4,7 @@
 #
 
 CLEANUP		:=
-CFLAGS		:=
+CFLAGS		:= -fno-strict-aliasing
 ASFLAGS		:=
 LDFLAGS		:=
 MAKEDEPS	:= Makefile
