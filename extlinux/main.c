@@ -41,6 +41,7 @@
 #include <sys/types.h>
 #include <sys/mount.h>
 #include <sys/vfs.h>
+#include <sys/sysmacros.h>
 
 #include "linuxioctl.h"
 
