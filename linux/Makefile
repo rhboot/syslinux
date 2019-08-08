@@ -18,8 +18,8 @@ include $(MAKEDIR)/syslinux.mk
 
 OPTFLAGS = -g -Os
 INCLUDES = -I$(SRC) -I$(objdir) -I$(SRC)/../libinstaller
-CFLAGS	 = $(GCCWARN) -D_FILE_OFFSET_BITS=64 $(OPTFLAGS) $(INCLUDES)
-LDFLAGS	 = 
+CFLAGS	 = $(RPMCFLAGS) $(GCCWARN) -D_FILE_OFFSET_BITS=64 $(OPTFLAGS) $(INCLUDES)
+LDFLAGS	 = $(RPMLDFLAGS)
 
 SRCS     = syslinux.c \
 	   ../libinstaller/syslxopt.c \

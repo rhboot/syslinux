@@ -17,8 +17,8 @@
 VPATH = $(SRC)
 include $(MAKEDIR)/syslinux.mk
 
-CFLAGS   = $(GCCWARN) -Os -fomit-frame-pointer -D_FILE_OFFSET_BITS=64 -I$(SRC)
-LDFLAGS  = -O2
+CFLAGS   = $(RPMCFLAGS) $(GCCWARN) -Os -fomit-frame-pointer -D_FILE_OFFSET_BITS=64 -I$(SRC)
+LDFLAGS  = $(RPMLDFLAGS) -O2
 
 C_TARGETS	 = isohybrid gethostip memdiskfind
 SCRIPT_TARGETS	 = mkdiskimage
