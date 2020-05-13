@@ -24,7 +24,7 @@ makeoutputdirs:
 		$(addprefix $(OBJ),$(sort $(dir $(LIBOBJS)))),$(b))
 
 libgpl.elf : $(LIBOBJS)
-	$(LD) -shared $(LDFLAGS) -soname $(patsubst %.elf,%.c32,$(@F)) -o $@ $^
+	$(LD) -shared $(LDFLAGS) -z muldefs -soname $(patsubst %.elf,%.c32,$(@F)) -o $@ $^
 
 tidy dist clean:
 	find . \( -name \*.o -o -name .\*.d -o -name \*.tmp \) -print0 | \

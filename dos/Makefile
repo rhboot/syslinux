@@ -19,7 +19,7 @@ include $(MAKEDIR)/embedded.mk
 CFLAGS	+= -D__MSDOS__ -mregparm=3 -DREGPARM=3
 # CFLAGS  += -DDEBUG
 
-LDFLAGS	 = -T $(SRC)/dosexe.ld
+LDFLAGS	 = -T $(SRC)/dosexe.ld -z muldefs
 OPTFLAGS = -g
 INCLUDES = -include code16.h -nostdinc -iwithprefix include \
 	   -I$(SRC) -I$(SRC)/.. -I$(SRC)/../libfat \

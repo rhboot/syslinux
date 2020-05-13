@@ -52,7 +52,7 @@ QEMU			?= qemu-kvm
 all: $(MODULES) $(TESTFILES)
 
 hdt.elf : $(OBJS) $(LIBS) $(C_LIBS)
-	$(LD) $(LDFLAGS) -o $@ $^
+	$(LD) $(LDFLAGS) -z muldefs -o $@ $^
 
 memtest:
 	-[ ! -f $(FLOPPY_DIR)/$(MEMTEST) ] && $(WGET) $(MEMTEST_URL) -O $(FLOPPY_DIR)/$(MEMTEST)

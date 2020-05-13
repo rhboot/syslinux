@@ -33,7 +33,7 @@ endif
 all: $(BTARGET) ldlinux_lnx.a
 
 ldlinux.elf : $(OBJS)
-	$(LD) $(LDFLAGS) -soname $(SONAME) -o $@ $^ $(LIBS)
+	$(LD) $(LDFLAGS) -z muldefs -soname $(SONAME) -o $@ $^ $(LIBS)
 
 LNXCFLAGS += -D__export='__attribute__((visibility("default")))'
 LNXLIBOBJS = get_key.lo

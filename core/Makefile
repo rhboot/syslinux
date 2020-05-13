@@ -156,7 +156,7 @@ LDSCRIPT = $(SRC)/$(ARCH)/syslinux.ld
 NASM_ELF = elf
 
 %.elf: %.o $(LIBDEP) $(LDSCRIPT) $(AUXLIBS)
-	$(LD) $(LDFLAGS) -pie -Bsymbolic \
+	$(LD) $(LDFLAGS) -z muldefs -pie -Bsymbolic \
 		-T $(LDSCRIPT) \
 		--unresolved-symbols=report-all \
 		-E --hash-style=gnu -M -o $@ $< \

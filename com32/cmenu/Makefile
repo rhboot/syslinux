@@ -49,7 +49,7 @@ makeoutputdirs:
 	@mkdir -p $(OBJ)/libmenu
 
 libmenu/libmenu.elf: $(LIBMENU)
-	$(LD) -shared $(LDFLAGS) -soname $(patsubst %.elf,%.c32,$(@F)) \
+	$(LD) -shared $(LDFLAGS) -z muldefs -soname $(patsubst %.elf,%.c32,$(@F)) \
 		-o $@ $^
 
 tidy dist:
