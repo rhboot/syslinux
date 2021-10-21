@@ -135,6 +135,7 @@ const char *edit_cmdline(const char *input, int top /*, int width */ ,
     struct cli_command *comm_counter = NULL;
     clock_t kbd_to = kbdtimeout;
     clock_t tto = totaltimeout;
+    int prompt_len = 1 + strlen(input);
 
     if (!width) {
 	int height;
@@ -144,7 +145,7 @@ const char *edit_cmdline(const char *input, int top /*, int width */ ,
 
     len = cursor = 0;
     prev_len = 0;
-    x = y = 0;
+    y = 0;
 
     /*
      * Before we start messing with the x,y coordinates print 'input'
@@ -152,6 +153,7 @@ const char *edit_cmdline(const char *input, int top /*, int width */ ,
      * previously.
      */
     printf("%s ", input);
+    x = prompt_len;
 
     while (!done) {
 	if (redraw > 1) {
@@ -162,8 +164,7 @@ const char *edit_cmdline(const char *input, int top /*, int width */ ,
 	    if (pDraw_Menu)
 		    (*pDraw_Menu) (-1, top, 1);
 	    prev_len = 0;
-	    printf("\033[2J\033[H");
-	    // printf("\033[0m\033[2J\033[H");
+	    printf("\033[2J\033[H"); /* Clear entire screen; move to 0, 0. */
 	}
 
 	if (redraw > 0) {
@@ -172,10 +173,14 @@ const char *edit_cmdline(const char *input, int top /*, int width */ ,
 	    prev_len = max(len, prev_len);
 
 	    /* Redraw the command line */
-	    printf("\033[?25l");
-	    printf("\033[1G%s ", input);
+	    printf("\033[?25l"); /* Hide cursor. */
+	    printf("\033[1G"); /* Column 1. */
+	    if (y > 0)
+		printf("\033[%dA", y); /* Directly up. */
 
-	    x = strlen(input);
+	    printf("%s ", input);
+
+	    x = prompt_len;
 	    y = 0;
 	    at = 0;
 	    while (at < prev_len) {
@@ -183,23 +188,22 @@ const char *edit_cmdline(const char *input, int top /*, int width */ ,
 		at++;
 		x++;
 		if (x >= width) {
-		    printf("\r\n");
 		    x = 0;
 		    y++;
 		}
 	    }
-	    printf("\033[K\r");
+	    printf("\033[K\r"); /* Clear to end of line; go to beginning. */
 
-	    dy = y - (cursor + strlen(input) + 1) / width;
-	    x = (cursor + strlen(input) + 1) % width;
+	    dy = y - (cursor + prompt_len) / width;
+	    x = (cursor + prompt_len) % width;
 
 	    if (dy) {
-		printf("\033[%dA", dy);
+		printf("\033[%dA", dy); /* Cursor directly up. */
 		y -= dy;
 	    }
 	    if (x)
-		printf("\033[%dC", x);
-	    printf("\033[?25h");
+		printf("\033[%dC", x); /* Cursor forward. */
+	    printf("\033[?25h"); /* Show cursor. */
 	    prev_len = len;
 	    redraw = 0;
 	}
@@ -439,7 +443,6 @@ const char *edit_cmdline(const char *input, int top /*, int width */ ,
 		    cursor++;
 		    x++;
 		    if (x >= width) {
-			printf("\r\n\033[K");
 			y++;
 			x = 0;
 		    }
@@ -459,7 +462,7 @@ const char *edit_cmdline(const char *input, int top /*, int width */ ,
 	}
     }
 
-    printf("\033[?7h");
+    printf("\033[?7h"); /* Enable line wrap. */
 
     /* Add the command to the history if its length is larger than 0 */
     len = strlen(ret);
